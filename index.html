@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Scanner QR JOISSE WIFI</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+
+body{
+    margin:0;
+        padding:0;
+            background:#f5f5f5;
+                font-family:Arial;
+                    text-align:center;
+                    }
+
+                    .container{
+                        padding:20px;
+                        }
+
+                        h2{
+                            color:#0d6efd;
+                            }
+
+                            #reader{
+                                width:100%;
+                                    max-width:500px;
+                                        margin:auto;
+                                        }
+
+                                        .info{
+                                            margin-top:20px;
+                                                color:#555;
+                                                }
+
+                                                </style>
+
+                                                </head>
+                                                <body>
+
+                                                <div class="container">
+
+                                                <h2>Scanner QR Code</h2>
+
+                                                <div id="reader"></div>
+
+                                                <p class="info">
+                                                Autorisez la caméra puis scannez votre QR code.
+                                                </p>
+
+                                                </div>
+
+                                                <script>
+
+                                                const params =
+                                                    new URLSearchParams(
+                                                            window.location.search
+                                                                );
+
+                                                                const returnUrl =
+                                                                    params.get("return_url") ||
+                                                                        "http://10.0.0.1";
+
+                                                                        function onScanSuccess(decodedText)
+                                                                        {
+                                                                            try {
+
+                                                                                    const data =
+                                                                                                JSON.parse(decodedText);
+
+                                                                                                        const username =
+                                                                                                                    encodeURIComponent(
+                                                                                                                                    data.username
+                                                                                                                                                );
+
+                                                                                                                                                        const password =
+                                                                                                                                                                    encodeURIComponent(
+                                                                                                                                                                                    data.password
+                                                                                                                                                                                                );
+
+                                                                                                                                                                                                        window.location.href =
+                                                                                                                                                                                                                    returnUrl +
+                                                                                                                                                                                                                                "?username=" +
+                                                                                                                                                                                                                                            username +
+                                                                                                                                                                                                                                                        "&password=" +
+                                                                                                                                                                                                                                                                    password;
+
+                                                                                                                                                                                                                                                                        } catch(e) {
+
+                                                                                                                                                                                                                                                                                window.location.href =
+                                                                                                                                                                                                                                                                                            returnUrl +
+                                                                                                                                                                                                                                                                                                        "?code=" +
+                                                                                                                                                                                                                                                                                                                    encodeURIComponent(decodedText);
+                                                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                                                        }
+
+                                                                                                                                                                                                                                                                                                                        const scanner =
+                                                                                                                                                                                                                                                                                                                            new Html5QrcodeScanner(
+                                                                                                                                                                                                                                                                                                                                    "reader",
+                                                                                                                                                                                                                                                                                                                                            {
+                                                                                                                                                                                                                                                                                                                                                        fps: 10,
+                                                                                                                                                                                                                                                                                                                                                                    qrbox: 250
+                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                                                                );
+
+                                                                                                                                                                                                                                                                                                                                                                                scanner.render(onScanSuccess);
+
+                                                                                                                                                                                                                                                                                                                                                                                </script>
+
+                                                                                                                                                                                                                                                                                                                                                                                </body>
+                                                                                                                                                                                                                                                                                                                                                                                </html>
