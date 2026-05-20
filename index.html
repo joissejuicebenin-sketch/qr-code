@@ -3,10 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="manifest" href="manifest.json">
+
 <meta name="theme-color" content="#0f3460">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JOISSE WIFI">
 
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Scanner QR | JOISSE WIFI</title>
 
 <!-- Favicon -->
@@ -438,7 +443,7 @@ body {
     }
 }
 </style>
-<base target="_blank">
+
 </head>
 
 <body>
@@ -512,11 +517,41 @@ body {
 </div>
 
 <script>
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", async () => {
+
+        try {
+
+            const registration = await navigator.serviceWorker.register(
+                "./service-worker.js"
+            );
+
+            console.log(
+                "Service Worker enregistré",
+                registration
+            );
+
+        } catch (err) {
+
+            console.error(
+                "Erreur Service Worker:",
+                err
+            );
+
+        }
+
+    });
+
+}
+</script>
+
+<script>
 // ============================================
 // PARAMÈTRES URL
 // ============================================
 const params = new URLSearchParams(window.location.search);
-const returnUrl = params.get("return_url") || "http://192.198.0.102/testWifizone/mobile/log.html/";
+const returnUrl = params.get("return_url") || "http://10.0.0.1";
 
 // ============================================
 // ÉLÉMENTS DOM
