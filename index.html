@@ -516,7 +516,7 @@ body {
 // PARAMÈTRES URL
 // ============================================
 const params = new URLSearchParams(window.location.search);
-const returnUrl = params.get("return_url") || "http://localhost/testWifizone/mobile/log.html/";
+const returnUrl = params.get("return_url") || "http://192.198.0.102/testWifizone/mobile/log.html/";
 
 // ============================================
 // ÉLÉMENTS DOM
@@ -576,8 +576,8 @@ function onScanSuccess(decodedText) {
             const code = encodeURIComponent(data.code || '');
 
             // Construire l'URL de retour
-            let redirectUrl = returnUrl;
-            const separator = returnUrl.includes('?') ? '&' : '?';
+            let redirectUrl = returnUrl.replace(/\/$/, "");
+            const separator = redirectUrl.includes('?') ? '&' : '?';
 
             if (data.username && data.password) {
                 redirectUrl += separator + 'username=' + username + '&password=' + password;
@@ -593,7 +593,7 @@ function onScanSuccess(decodedText) {
 
         } catch(e) {
             // Si ce n'est pas du JSON valide, utiliser le texte brut comme code
-            const redirectUrl = returnUrl + 
+            const redirectUrl = returnUrl.replace(/\/$/, "") + 
                 (returnUrl.includes('?') ? '&' : '?') + 
                 'code=' + encodeURIComponent(decodedText);
             window.location.href = redirectUrl;
