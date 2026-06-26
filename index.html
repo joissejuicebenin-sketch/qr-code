@@ -551,7 +551,7 @@ if ("serviceWorker" in navigator) {
 // PARAMÈTRES URL
 // ============================================
 const params = new URLSearchParams(window.location.search);
-const returnUrl = params.get("return_url") || "http://10.0.0.1/";
+const returnUrl = params.get("return_url") || "http://10.0.0.1/code/";
 
 // ============================================
 // ÉLÉMENTS DOM
@@ -617,10 +617,10 @@ function onScanSuccess(decodedText) {
             if (data.username && data.password) {
                 redirectUrl += separator + 'username=' + username + '&password=' + password;
             } else if (data.code) {
-                redirectUrl += separator + 'code=' + code;
+                redirectUrl += code;
             } else {
                 // Fallback: utiliser le texte brut comme code
-                redirectUrl += separator + 'code=' + encodeURIComponent(decodedText);
+                redirectUrl += encodeURIComponent(decodedText);
             }
 
             // Redirection
