@@ -611,16 +611,18 @@ function onScanSuccess(decodedText) {
             const code = encodeURIComponent(data.code || '');
 
             // Construire l'URL de retour
-            let redirectUrl = returnUrl.replace(/\/$/, "");
-            const separator = redirectUrl.includes('?') ? '&' : '?';
+            // let redirectUrl = returnUrl.replace(/\/$/, "");
+            // const separator = redirectUrl.includes('?') ? '&' : '?';
 
-            if (data.username && data.password) {
-                redirectUrl += separator + 'username=' + username + '&password=' + password;
-            } else if (data.code) {
-                redirectUrl += code;
+            // if (data.username && data.password) {
+            //     redirectUrl += separator + 'username=' + username + '&password=' + password;
+            // } else 
+            if (data.code) {
+                returnUrl += data.code;
             } else {
                 // Fallback: utiliser le texte brut comme code
-                redirectUrl += encodeURIComponent(decodedText);
+                // returnUrl += encodeURIComponent(decodedText);
+                returnUrl += decodedText;
             }
 
             // Redirection
