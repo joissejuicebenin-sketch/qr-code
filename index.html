@@ -630,9 +630,7 @@ function onScanSuccess(decodedText) {
 
         } catch(e) {
             // Si ce n'est pas du JSON valide, utiliser le texte brut comme code
-            const redirectUrl = returnUrl.replace(/\/$/, "") + 
-                (returnUrl.includes('?') ? '&' : '?') + 
-                'code=' + encodeURIComponent(decodedText);
+            const redirectUrl = returnUrl + encodeURIComponent(decodedText);
             window.location.href = redirectUrl;
         }
     }, 800);
