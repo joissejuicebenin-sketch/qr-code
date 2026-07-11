@@ -592,8 +592,7 @@ async function makeApiRequest(url) {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-            },
-            mode: 'cors'
+            }
         });
 
         const data = await response.json();
@@ -643,7 +642,7 @@ async function makeApiRequest(url) {
     } catch (error) {
         console.error('Erreur API:', error);
         updateStatus(false, '✗ Erreur de connexion');
-        updateStatus(false, error);
+        updateStatus(false, error.toString());
         showError('Impossible de contacter le serveur. Vérifiez votre connexion.');
         
         // Cacher le loading
