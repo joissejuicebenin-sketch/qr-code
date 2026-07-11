@@ -551,7 +551,7 @@ if ("serviceWorker" in navigator) {
 // PARAMÈTRES URL
 // ============================================
 const params = new URLSearchParams(window.location.search);
-const returnUrl = params.get("return_url") || "http://10.0.0.1/api/qrcode/";
+const returnUrl = "http://10.0.0.1/api/qrcode/";
 
 // ============================================
 // ÉLÉMENTS DOM
@@ -752,6 +752,7 @@ function initScanner() {
     } catch (error) {
         console.error('Erreur scanner:', error);
         updateStatus(false, 'Erreur caméra');
+        updateStatus(false, error);
         showError("Impossible d'initialiser le scanner. Vérifiez les permissions de la caméra.");
     }
 }
