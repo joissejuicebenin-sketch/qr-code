@@ -643,6 +643,7 @@ async function makeApiRequest(url) {
     } catch (error) {
         console.error('Erreur API:', error);
         updateStatus(false, '✗ Erreur de connexion');
+        updateStatus(false, error);
         showError('Impossible de contacter le serveur. Vérifiez votre connexion.');
         
         // Cacher le loading
