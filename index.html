@@ -582,68 +582,21 @@ function showError(message) {
 }
 
 // ============================================
-// APPEL API ET GESTION DES RÉPONSES
+// REDIRECTION DIRECTE VIA WINDOW.LOCATION
 // ============================================
-async function makeApiRequest(url) {
+function redirectToApi(url) {
     try {
         updateStatus(true, 'Traitement en cours...');
+        showLoading();
         
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            }
-        });
-
-        const data = await response.json();
-        
-        console.log('Réponse API:', data);
-
-        if (response.ok && data.status === 'success') {
-            // Succès
-            updateStatus(true, '✓ Connexion réussie !');
-            showLoading();
-            
-            // Mettre à jour le texte de chargement avec les infos utilisateur
-            const loadingText = document.querySelector('.loading-text');
-            const loadingSubtext = document.querySelector('.loading-subtext');
-            
-            if (data.username) {
-                loadingText.textContent = 'Bienvenue, ' + data.username + ' !';
-            }
-            if (data.time_remaining) {
-                const minutes = Math.floor(data.time_remaining / 60);
-                loadingSubtext.textContent = 'Temps restant: ' + minutes + ' minutes';
-            }
-            
-            // Redirection après un délai
-            setTimeout(() => {
-                if (data.redirect_url) {
-                    window.location.href = data.redirect_url;
-                } else {
-                    // Fallback: recharger la page ou rediriger vers le portail
-                    window.location.href = 'http://10.0.0.1/portal';
-                }
-            }, 2000);
-            
-        } else {
-            // Erreur
-            const errorMessage = data.message || data.detail || 'Erreur lors de la connexion';
-            updateStatus(false, '✗ Échec de la connexion');
-            showError(errorMessage);
-            
-            // Cacher le loading et rediriger vers le portail avec l'erreur
-            setTimeout(() => {
-                loadingOverlay.classList.remove('show');
-                window.location.href = 'http://10.0.0.1/portal?error=' + encodeURIComponent(errorMessage);
-            }, 3000);
-        }
+        // Redirection directe vers l'API
+        // Le serveur traitera la requête et redirigera vers le portail
+        window.location.href = url;
         
     } catch (error) {
-        console.error('Erreur API:', error);
-        updateStatus(false, '✗ Erreur de connexion');
-        updateStatus(false, error.toString());
-        showError('Impossible de contacter le serveur. Vérifiez votre connexion.');
+        console.error('Erreur redirection:', error);
+        updateStatus(false, '✗ Erreur de redirection');
+        showError('Impossible de se connecter. Veuillez réessayer.');
         
         // Cacher le loading
         setTimeout(() => {
@@ -694,13 +647,13 @@ function onScanSuccess(decodedText) {
                 redirectUrl += separator + 'code=' + encodeURIComponent(decodedText);
             }
 
-            // Appel API avec fetch pour traiter la réponse
-            makeApiRequest(redirectUrl);
+            // Redirection directe vers l'API (évite les blocages CORS/fetch)
+            redirectToApi(redirectUrl);
 
         } catch(e) {
             // Si ce n'est pas du JSON valide, utiliser le texte brut comme code
             const redirectUrl = returnUrl.replace(/\/$/, "") + '?code=' + encodeURIComponent(decodedText);
-            makeApiRequest(redirectUrl);
+            redirectToApi(redirectUrl);
         }
     }, 800);
 }
