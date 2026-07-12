@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environnement virtuel
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+myvenv/
+.venv/
+
+# Fichiers temporaires
+temp_camera_frame.png
+*.tmp
+*.temp
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flet
+*.flet/
+
+# Variables d'environnement
+.env
+.env.local
+.env.*.local
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution
+*.apk
+*.ipa
+*.app

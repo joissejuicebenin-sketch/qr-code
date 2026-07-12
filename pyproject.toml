@@ -1,0 +1,191 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+# =========================================================
+# Projet
+# =========================================================
+
+[project]
+name = "juisseqrcode"
+version = "1.0.0"
+
+description = "Application JUISSE QRCODE"
+readme = "README.md"
+
+requires-python = ">=3.11,<3.13"
+
+license = { text = "MIT" }
+
+authors = [
+    { name = "BOCO Israël", email = "isboco1@gmail.com" }
+]
+
+keywords = [
+    "qrcode",
+    "juisse",
+    "ishotdpot",
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Other Audience",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    # UI
+    "flet>=0.28.0",
+    "opencv-python>=4.8.0",
+    "pillow>=10.0.0",
+    "requests>=2.31.0",
+    "numpy>=1.24.0",
+    "qrcode"
+]
+
+
+# =========================================================
+# Scripts
+# =========================================================
+
+[project.scripts]
+juisseqrcode = "app.main:main"
+
+# =========================================================
+# Flet
+# =========================================================
+
+[tool.flet]
+org = "com.juisseqrcode"
+product = "JUISSE QRCODE"
+
+company = "JUISSE QRCODE"
+
+copyright = "Copyright © 2026 JUISSE QRCODE"
+
+# Assets
+assets_dir = "assets"
+
+
+# =========================================================
+# App
+# =========================================================
+
+[tool.flet.app]
+path = "."
+
+
+# =========================================================
+# Android
+# =========================================================
+
+[tool.flet.android]
+
+orientation = "portrait"
+
+# SDK
+min_sdk_version = 24
+target_sdk_version = 35
+
+# Optimisation APK
+split_per_abi = true
+
+# Splash screen
+splash_color = "#0F5D3F"
+
+# Icône application
+icon = "assets/logo.png"
+
+# Adaptive icon Android 13+
+adaptive_icon_background = "#0F5D3F"
+adaptive_icon_foreground = "assets/logo.png"
+
+# Permissions Android
+permissions = [
+    "android.permission.INTERNET",
+
+    "android.permission.CAMERA",
+    "android.permission.VIBRATE",
+]
+
+[tool.flet.android.permission]
+"android.permission.INTERNET" = true
+"android.permission.CAMERA" = true
+"android.permission.VIBRATE" = true
+
+
+# =========================================================
+# Packaging
+# =========================================================
+
+[tool.setuptools]
+include-package-data = true
+
+
+# =========================================================
+# Black
+# =========================================================
+
+[tool.black]
+line-length = 100
+target-version = ["py311", "py312"]
+
+include = '\.pyi?$'
+
+
+# =========================================================
+# MyPy
+# =========================================================
+
+[tool.mypy]
+python_version = "3.11"
+
+warn_return_any = true
+warn_unused_configs = true
+
+disallow_untyped_defs = false
+
+check_untyped_defs = true
+
+ignore_missing_imports = true
+
+
+# =========================================================
+# Pytest
+# =========================================================
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+python_files = ["test_*.py"]
+
+python_classes = ["Test*"]
+
+python_functions = ["test_*"]
+
+
+# =========================================================
+# Ruff (lint moderne)
+# =========================================================
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+]
+
+ignore = [
+    "E501",
+]
