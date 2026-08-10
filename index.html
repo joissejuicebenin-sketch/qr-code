@@ -940,6 +940,11 @@ if (manualSubmitBtn) {
 }
 
 if (manualCodeInput) {
+    // Convertir automatiquement en majuscules
+    manualCodeInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.toUpperCase();
+    });
+    
     manualCodeInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             handleManualSubmit();
