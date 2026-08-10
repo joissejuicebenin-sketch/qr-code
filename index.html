@@ -370,6 +370,98 @@ body {
 }
 
 /* ============================================
+   MANUAL INPUT SECTION
+   ============================================ */
+.manual-toggle {
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+    font-size: 1.1rem;
+    margin-left: auto;
+    padding: 0.25rem;
+    user-select: none;
+}
+
+.manual-toggle:hover {
+    opacity: 0.8;
+}
+
+.manual-section {
+    display: none;
+    width: 100%;
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.manual-section.show {
+    display: block;
+}
+
+.manual-card {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.manual-header {
+    background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+    color: white;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.manual-body {
+    padding: 1.5rem;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#manualCodeInput {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+#manualCodeInput:focus {
+    border-color: #0f3460;
+}
+
+#manualSubmitBtn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+#manualSubmitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(233, 69, 96, 0.4);
+}
+
+#manualSubmitBtn:active {
+    transform: translateY(0);
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 480px) {
@@ -394,6 +486,10 @@ body {
     }
 
     .info-card {
+        padding: 1rem;
+    }
+
+    .manual-body {
         padding: 1rem;
     }
 }
@@ -473,6 +569,21 @@ body {
     <div class="status-bar">
         <span class="status-dot" id="statusDot"></span>
         <span id="statusText">En attente de la caméra...</span>
+        <span class="manual-toggle" id="manualToggle" title="Saisie manuelle">⌨️</span>
+    </div>
+
+    <!-- Manual Input Section (hidden by default) -->
+    <div class="manual-section" id="manualSection">
+        <div class="manual-card">
+            <div class="manual-header">
+                <span>🔑</span>
+                <span>Saisie manuelle du code</span>
+            </div>
+            <div class="manual-body">
+                <input type="text" id="manualCodeInput" placeholder="Entrez votre code ici" autocomplete="off">
+                <button id="manualSubmitBtn">Se connecter</button>
+            </div>
+        </div>
     </div>
 
     <!-- Info Section -->
@@ -726,6 +837,115 @@ window.addEventListener('popstate', () => {
         } catch(e) {}
     }
 });
+
+// ============================================
+// GESTION DE LA SAISIE MANUELLE
+// ============================================
+const manualToggle = document.getElementById('manualToggle');
+const manualSection = document.getElementById('manualSection');
+const manualCodeInput = document.getElementById('manualCodeInput');
+const manualSubmitBtn = document.getElementById('manualSubmitBtn');
+
+function toggleManualSection() {
+    const isVisible = manualSection.classList.toggle('show');
+    if (isVisible) {
+        manualCodeInput.focus();
+        // Masquer le scanner quand la saisie manuelle est affichée
+        const readerElement = document.getElementById('reader');
+        if (readerElement) {
+            readerElement.style.display = 'none';
+        }
+        updateStatus(true, 'Saisie manuelle activée');
+    } else {
+        // Réafficher le scanner
+        const readerElement = document.getElementById('reader');
+        if (readerElement) {
+            readerElement.style.display = 'block';
+        }
+        updateStatus(true, 'Caméra active — Prêt à scanner');
+    }
+}
+
+function handleManualSubmit() {
+    const code = manualCodeInput.value.trim();
+    
+    if (!code) {
+        showError('Veuillez entrer un code.');
+        manualCodeInput.focus();
+        return;
+    }
+
+    // Cacher la section manuelle et réafficher le scanner
+    manualSection.classList.remove('show');
+    const readerElement = document.getElementById('reader');
+    if (readerElement) {
+        readerElement.style.display = 'block';
+    }
+
+    // Traiter le code comme un scan QR réussi
+    showLoading();
+    updateStatus(true, 'Traitement du code...');
+
+    setTimeout(() => {
+        try {
+            // Essayer de parser comme JSON d'abord
+            let data;
+            try {
+                data = JSON.parse(code);
+            } catch(e) {
+                // Si ce n'est pas du JSON, utiliser le code brut
+                data = { code: code };
+            }
+
+            // Vérifier que les données essentielles existent
+            if (!data.username && !data.password && !data.code) {
+                throw new Error('Format invalide');
+            }
+
+            const username = encodeURIComponent(data.username || '');
+            const password = encodeURIComponent(data.password || '');
+            const codeParam = encodeURIComponent(data.code || '');
+
+            // Construire l'URL de retour
+            let redirectUrl = returnUrl.replace(/\/$/, "");
+            const separator = redirectUrl.includes('?') ? '&' : '?';
+
+            if (data.username && data.password) {
+                redirectUrl += separator + 'username=' + username + '&password=' + password;
+            } else if(data.code) {
+                redirectUrl += separator + 'code=' + codeParam;
+            } else {
+                // Fallback: utiliser le texte brut comme code
+                redirectUrl += separator + 'code=' + encodeURIComponent(code);
+            }
+
+            // Redirection directe vers l'API
+            redirectToApi(redirectUrl);
+
+        } catch(e) {
+            // Si ce n'est pas du JSON valide, utiliser le texte brut comme code
+            const redirectUrl = returnUrl.replace(/\/$/, "") + '?code=' + encodeURIComponent(code);
+            redirectToApi(redirectUrl);
+        }
+    }, 300);
+}
+
+// Event listeners pour la saisie manuelle
+if (manualToggle) {
+    manualToggle.addEventListener('click', toggleManualSection);
+}
+
+if (manualSubmitBtn) {
+    manualSubmitBtn.addEventListener('click', handleManualSubmit);
+}
+
+if (manualCodeInput) {
+    manualCodeInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleManualSubmit();
+        }
+    });
+}
 
 // ============================================
 // DÉMARRAGE
